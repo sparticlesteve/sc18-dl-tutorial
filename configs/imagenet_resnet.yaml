@@ -10,7 +10,7 @@ model:
     name: resnet50
     input_shape: [224, 224, 3]
     n_classes: 100
-    dropout: 0.2
+    dropout: 0.5
 
 optimizer:
     name: Adam
