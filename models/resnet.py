@@ -25,13 +25,26 @@ def build_resnet18_cifar(input_shape=(32, 32, 3), n_classes=10, dropout=None):
                          initial_pooling=None,
                          top='classification')
 
-def build_resnet50(input_shape=(224, 224, 3), n_classes=100, dropout=None):
+def build_resnet50(input_shape=(224, 224, 3), n_classes=100, dropout=None,
+                   l2_regularization=5e-4):
     """Build the resnet50 model with appropriate settings for ImageNet"""
-    return resnet.ResNet(input_shape=input_shape,
-                         classes=n_classes,
-                         block='bottleneck',
-                         repetitions=[3, 4, 6, 3],
-                         dropout=dropout)
+    model = resnet.ResNet(input_shape=input_shape,
+                          classes=n_classes,
+                          block='bottleneck',
+                          repetitions=[3, 4, 6, 3],
+                          dropout=dropout)
+
+    # Increase the L2 regularization to reduce overfitting, as done in
+    # https://github.com/uber/horovod/blob/master/examples/keras_imagenet_resnet50.py
+    model_config = model.get_config()
+    for layer, layer_config in zip(model.layers, model_config['layers']):
+        if hasattr(layer, 'kernel_regularizer'):
+            regularizer = keras.regularizers.l2(l2_regularization)
+            layer_config['config']['kernel_regularizer'] = \
+                {'class_name': regularizer.__class__.__name__,
+                 'config': regularizer.get_config()}
+    model = keras.models.Model.from_config(model_config)
+    return model
 
 def _test():
     model = build_resnet18_cifar()
