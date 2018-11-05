@@ -3,8 +3,8 @@ output_dir: $SCRATCH/sc18-dl-tutorial/tinyimagenet-cnn
 
 data:
     name: tiny-imagenet
-    train_dir: /global/cscratch1/sd/sfarrell/tiny-imagenet/train
-    valid_dir: /global/cscratch1/sd/sfarrell/tiny-imagenet/valid
+    train_dir: /data0/tiny-imagenet/train
+    valid_dir: /data0/tiny-imagenet/valid
 
 model:
     name: cnn
