@@ -1,5 +1,5 @@
-description: 'ResNet ImageNet'
-output_dir: $SCRATCH/sc18-dl-tutorial/imagenet-resnet
+description: 'Official ResNet ImageNet'
+output_dir: $SCRATCH/sc18-dl-tutorial/resnet50-official
 
 data:
     name: imagenet
@@ -7,8 +7,7 @@ data:
     valid_dir: /data0/ImageNet-100/validation
 
 model:
-    name: resnet50
-    input_shape: [224, 224, 3]
+    name: resnet50_official
     n_classes: 100
 
 optimizer:
