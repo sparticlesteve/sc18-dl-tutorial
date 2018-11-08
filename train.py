@@ -79,7 +79,8 @@ def main():
         logging.info('Saving job outputs to %s', output_dir)
 
     # Configure session
-    configure_session()
+    device_config = config.get('device', {})
+    configure_session(**device_config)
 
     # Load the data
     train_gen, valid_gen = get_datasets(batch_size=train_config['batch_size'],
@@ -108,6 +109,11 @@ def main():
         callbacks.append(hvd.callbacks.LearningRateWarmupCallback(
             warmup_epochs=warmup_epochs, verbose=1))
 
+        # Learning rate schedule
+        for lr_schedule in train_config.get('lr_schedule', []):
+            logging.info('Adding LR schedule: %s', lr_schedule)
+            callbacks.append(hvd.callbacks.LearningRateScheduleCallback(**lr_schedule))
+
     # Checkpoint only from rank 0
     if rank == 0:
         os.makedirs(os.path.dirname(checkpoint_format), exist_ok=True)
@@ -125,7 +131,11 @@ def main():
                                   validation_data=valid_gen,
                                   validation_steps=len(valid_gen),
                                   callbacks=callbacks,
+<<<<<<< HEAD
                                   verbose=1, workers=6)
+=======
+                                  workers=4, verbose=2)
+>>>>>>> master
 
     # Save training history
     if rank == 0:
