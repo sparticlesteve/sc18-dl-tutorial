@@ -126,13 +126,14 @@ def main():
 
     # Train the model
     steps_per_epoch = len(train_gen) // n_ranks
+    train_verbose = 1 if rank == 0 else 0
     history = model.fit_generator(train_gen,
                                   epochs=train_config['n_epochs'],
                                   steps_per_epoch=steps_per_epoch,
                                   validation_data=valid_gen,
                                   validation_steps=len(valid_gen),
                                   callbacks=callbacks,
-                                  workers=4, verbose=1)
+                                  workers=4, verbose=train_verbose)
 
     # Save training history
     if rank == 0:
